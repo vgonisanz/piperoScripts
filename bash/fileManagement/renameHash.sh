@@ -8,7 +8,8 @@
 
 # Global variable declaration
 # ================================================================================
-# No needed
+outputpath="$(pwd)/output"               # Output folder by default
+inputpath="$(pwd)/input"                 # input folder by default
 
 # Function declaration
 # ================================================================================
@@ -24,10 +25,31 @@ f_display_usage()
   echo "|  ${optionOutput} = Set output path"
   echo -e "--------------------------------------------------"
 }
+f_get_hash()
+{
+  #temp=$(echo "${1}" | sed 's/\-/ /' )
+  #temp=`md5sum ${1} | awk '{ print $1 }'`
+  echo ${temp}
+}
 f_process()
 {
-  echo " Renaming files..."
-  echo " done!"
+  echo -e "Renaming files from: \n ${inputpath}\n to:\n ${outputpath}"
+  if [ ! -d "${outputpath}" ] # d for directory
+  then
+    echo "  Creating output folder..."
+    mkdir ${outputpath}
+  fi
+  echo -e "Processing..."
+  counter=0
+  for file in "${inputpath}"/*    # * = All items, in output path
+  do
+      outfile=$(f_get_hash "${outfile}")
+      echo "  Filename ${counter}: ${file##*/} --> ${outfile}"
+      cp "${file}" "${outputpath}/${outfile}"
+      let "counter += 1"  # Forward
+  done
+  echo "  ${counter} files processed! All files copied in output"
+  echo -e "done!"
 }
 
 ### Other functions
@@ -57,7 +79,7 @@ Nargs=(${#})  # Number of arguments
 # : after an option (short or long) tells that option is required argument
 # :: tells is a optional argument
 # For extension take a look here: http://www.bahmanm.com/blogs/command-line-options-how-to-parse-in-bash-using-getopt
-options=$(getopt -o hs:ao -l help,say:,author,options -- "${@}")
+options=$(getopt -o hi:o: -l help,input:,output: -- "${@}")
 if [[ $? -ne 0 ]]
 then
   echo "  Error: Detected invalid option"
@@ -84,8 +106,8 @@ while [ "$1" != "" ]
 do
   case "$1" in
       -h|--help) f_display_usage ;; # Call function
-      -i|--input) f_say $2 ; shift ;; # Call function with argument, and discard argument
-      -o|--output) f_author ;;      # Call a function to print author
+      -i|--input) inputpath=${2} ; echo "   Setting Input path: ${2}" ; shift ;; # Call function, reading next variable and shift
+      -o|--output) outputpath=${2} ; echo "   Setting Output path: ${2}" ; shift ;; # Call function, reading next variable and shift
       *)         echo "Unknown option: $1" ; f_display_usage ; break ;;
   esac
   shift;  # Advance
