@@ -135,7 +135,7 @@ class JsonManager(object):
             json_data = self._json_data
         if array_key is None:
             array_key = self._array_key
-        print("Json contains keys: %s" % list(json_data))
+        print("Json read only keys: %s" % list(array_key))
         for key in array_key:
             value = json_data[key]
             print("Key: %s with value: %s" % (key, value))
@@ -164,8 +164,11 @@ class JsonManager(object):
     """
     Write json
     """
-    def write_json(self, json_data):
-        print("write_json")
+    def write_json(self, file_name, json_data):
+        print("Writing: %s" % file_name)
+        full_destination_name = os.path.join(self._output_path, file_name)
+        with open(full_destination_name, 'w') as outfile:
+            json.dump(json_data, outfile)
         return
 
     """
@@ -180,3 +183,14 @@ class JsonManager(object):
         else:
             print("Missing value: %s in json" % key)
         return value
+
+    """
+    create_json_object_from_list
+    """
+    def create_json_object_from_list(self, list_of_list=None):
+        successful = True
+        data = {}
+        for pair in list_of_list:
+            data[pair[0]] = pair[1]
+
+        return successful, data

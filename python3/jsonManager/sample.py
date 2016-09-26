@@ -2,6 +2,8 @@ from jsonManager import JsonManager
 import sys
 import os
 
+# Sample functions
+#############################################################
 def abort_exe( exit_message ):
     print(exit_message)
     print("Aborting...")
@@ -14,14 +16,24 @@ def process_key(self, key, newvalue):
 def testinfo(self):
     print("testinfo")
 
-if __name__ == '__main__':
-    # Configure variables to provide to class
+def try_wrong_file():
+    print("-- try_wrong_file ------------------------------------------")
+    # Create instance
+    parser = JsonManager('parser')
+    # Try to parse wrong file
+    successful, json_data = parser.read_json_from_file("wrong_file.json")
+    print("successful? %s" % successful)
+    print("------------------------------------------------------------")
+    return
+
+def try_read_file():
+    print("-- try_read_file ------------------------------------------")
+
+    # Configure variables to provide to class sample
     #############################################################
     jsonkeys = ['a', 'b', 'd']
     input_path = os.path.join(os.getcwd(), "input/")
 
-    # Use class
-    ###########################################################
     # Create instance
     parser = JsonManager('parser')
     # Set array with keys
@@ -33,25 +45,51 @@ if __name__ == '__main__':
     print("successful? %s" % successful)
 
     # Get a value if exist or print error
-    #value = parser.get_value(json_data, 'f')
-    #print("Value is: %s" % value)
+    value = parser.get_value(json_data, 'f')
+    print("Value is: %s" % value)
     # Print and get a value
-    #value = parser.print_json_value(json_data, 'a')
+    value = parser.print_json_value(json_data, 'a')
     # Print all json values
-    #parser.print_all_json_values(json_data)
+    parser.print_all_json_values(json_data)
     # Print only values in array
-    #parser.print_arraykey_json_values(json_data, jsonkeys)
+    parser.print_arraykey_json_values(json_data, jsonkeys)
+    print("------------------------------------------------------------")
+    return
+
+def try_create_file():
+    print("-- try_create_file ------------------------------------------")
+    output_path = os.path.join(os.getcwd(), "output/")
+    json_values_array = []
+    json_values_array.append(["key1", "value1"])
+    json_values_array.append(["key2", "value2"])
+    json_values_array.append(["key3", "value4"])
+
+    # Create instance
+    parser = JsonManager('parser')
+    parser.set_output_path(output_path)
+
+    # Try to create json object
+    successful, json_data = parser.create_json_object_from_list(json_values_array)
+    parser.print_all_json_values(json_data)
+    print("successful? %s" % successful)
+    parser.write_json("test_output.json", json_data)
+    print("------------------------------------------------------------")
+    return
+
+def try_process_with_external_function():
     # Process default
-    parser.process_function()
+    #parser.process_function()
     # Overload processing with function
-    parser.set_process_function(process_key)
+    #parser.set_process_function(process_key)
     # Call new process function
     #parser.process_function("key", "value")
 
+if __name__ == '__main__':
 
-    # Try to parse wrong file
-    #successful, json_data = parser.read_json_from_file("wrong_file.json")
-    #print("successful? %s" % successful)
-
+    # Use class
+    ###########################################################
+    try_wrong_file()
+    try_read_file()
+    try_create_file()
     # parser.test()
-    #abort_exe("Finish.")
+    print("Finish.")
