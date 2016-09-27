@@ -2,6 +2,11 @@ from jsonManager import JsonManager
 import sys
 import os
 
+# Global variables
+scriptname = ""
+pathname = ""
+full_path_name = ""
+
 # Sample functions
 #############################################################
 def abort_exe( exit_message ):
@@ -10,24 +15,29 @@ def abort_exe( exit_message ):
     sys.exit(0)
     return
 
-def process_key(self, key, newvalue):
-    print("Changing key: %s with value: %s" % (key, newvalue))
+def external_process_key(*arg):
+    isJsonValid = arg[0]
+    if isJsonValid == True:
+        print(arg[1])
+    else:
+        print("Cannot process a invalid json")
+    return
 
 def testinfo(self):
     print("testinfo")
 
-def try_wrong_file():
-    print("-- try_wrong_file ------------------------------------------")
+def try_read_wrong_file():
+    print("== try_read_wrong_file ===========================================")
     # Create instance
     parser = JsonManager('parser')
     # Try to parse wrong file
     successful, json_data = parser.read_json_from_file("wrong_file.json")
     print("successful? %s" % successful)
-    print("------------------------------------------------------------")
+    print("==================================================================")
     return
 
 def try_read_file():
-    print("-- try_read_file ------------------------------------------")
+    print("== try_read_file ===========================================")
 
     # Configure variables to provide to class sample
     #############################################################
@@ -53,12 +63,12 @@ def try_read_file():
     parser.print_all_json_values(json_data)
     # Print only values in array
     parser.print_arraykey_json_values(json_data, jsonkeys)
-    print("------------------------------------------------------------")
+    print("==================================================================")
     return
 
-def try_create_file():
-    print("-- try_create_file ------------------------------------------")
-    output_path = os.path.join(os.getcwd(), "output/")
+def try_create_file_from_list():
+    print("== try_create_file_from_list ===========================================")
+    output_path = os.path.join(full_path_name, "output/")
     json_values_array = []
     json_values_array.append(["key1", "value1"])
     json_values_array.append(["key2", "value2"])
@@ -69,32 +79,63 @@ def try_create_file():
     parser.set_output_path(output_path)
 
     # Try to create json object
-    successful, json_data = parser.create_json_object_from_list(json_values_array)
+    successful, json_data = parser.create_json_object_from_list(json_values_array, True)
     parser.print_all_json_values(json_data)
     print("successful? %s" % successful)
     parser.write_json("test_output.json", json_data)
-    print("------------------------------------------------------------")
+    print("==================================================================")
+    return
+
+def try_create_file_from_csv():
+    print("== try_create_file_from_csv ===========================================")
+    input_path = os.path.join(full_path_name, "input/")
+    output_path = os.path.join(full_path_name, "output/")
+
+    # Create instance
+    parser = JsonManager('parser')
+    parser.set_input_path(input_path)
+    parser.set_output_path(output_path)
+
+    # Try to create json object
+    successful, json_data = parser.create_json_object_from_csv("csv_file.csv", ';')
+    parser.print_all_json_values(json_data)
+    print("successful? %s" % successful)
+    parser.write_json("test_csv_output.json", json_data)
+    print("==================================================================")
     return
 
 def try_process_with_external_function():
-    print("-- try_process_with_external_function ------------------------------------------")
-    # Process default
-    #parser.process_function()
-    # Overload processing with function
-    #parser.set_process_function(process_key)
-    # Call new process function
-    #parser.process_function("key", "value")
-    print("------------------------------------------------------------")
+    print("== try_process_with_external_function ===========================================")
+    # Create instance
+    parser = JsonManager('parser')
+    input_path = os.path.join(full_path_name, "input/")
+
+    parser.set_process_function(external_process_key)
+    parser.process_all_files_in_folders(input_path, True, True)
+    print("==================================================================")
+    return
 
 def initialize():
     scriptname = sys.argv[0]
     pathname = os.path.dirname(sys.argv[0])
     full_path_name = os.path.abspath(pathname)
-    print('Executing: ', scriptname)
+
     # Create output path if needed
     output_path = os.path.join(full_path_name, "output/")
     if not os.path.exists(output_path):
         os.makedirs(output_path)
+    print("\n")
+    print("==================================================================")
+    print('   Executing: ', scriptname)
+    print("==================================================================")
+    print("\n")
+    return
+
+def abort_exe( str ):
+    print( str )
+    print("Aborting...")
+    sys.exit(0)
+    return
 
 if __name__ == '__main__':
     # Initialize
@@ -103,9 +144,15 @@ if __name__ == '__main__':
 
     # Use class
     ###########################################################
-    try_wrong_file()
+    try_read_wrong_file()
     try_read_file()
-    try_create_file()
+    try_create_file_from_list()
+    try_create_file_from_csv()
+    try_process_with_external_function()
 
     # parser.test()
-    print("Finish.")
+    print("\n")
+    print("==================================================================")
+    print("   Finish.")
+    print("==================================================================")
+    print("\n")

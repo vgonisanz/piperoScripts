@@ -86,8 +86,6 @@ class JsonManager(object):
     set_process_function
     """
     def set_process_function(self, function_callback=None):
-        #if function_callback is None:
-        #    function_callback = self.process
         print("Setting process function: %s" % function_callback)
         self._function_callback = function_callback
         return
@@ -95,11 +93,12 @@ class JsonManager(object):
     """
     process_function_default
     """
-    def process_function(self, arguments=None):
+    def process_function(self, *arg):
         if(self._function_callback == None):
             print("Default process... overload call with set_process_function!")
         else:
-            self._function_callback(arguments)
+            print("Calling external process function")
+            self._function_callback(*arg)
         return
 
     """
@@ -158,7 +157,7 @@ class JsonManager(object):
                 self._json_data = json.load(data_file, object_pairs_hook=collections.OrderedDict)
                 successful = True
         else:
-            print("File: %s no exist." % file_name)
+            print("File: %s no exist in input path." % file_name)
         return (successful, self._json_data)
 
     """
@@ -168,7 +167,7 @@ class JsonManager(object):
         print("Writing: %s" % file_name)
         full_destination_name = os.path.join(self._output_path, file_name)
         with open(full_destination_name, 'w') as outfile:
-            json.dump(json_data, outfile)
+            json.dump(json_data, outfile, sort_keys=False)
         return
 
     """
@@ -187,10 +186,51 @@ class JsonManager(object):
     """
     create_json_object_from_list
     """
-    def create_json_object_from_list(self, list_of_list=None):
+    def create_json_object_from_list(self, list_of_list=None, print_values=False):
         successful = True
         data = {}
         for pair in list_of_list:
             data[pair[0]] = pair[1]
-
+            if print_values == True:
+                print("pair with Key: %s and value %s" % (pair[0], pair[1]))
         return successful, data
+
+    """
+    create_json_object_from_csv
+    """
+    def create_json_object_from_csv(self, csv_name, split_char=';', print_values=False):
+        print("Reading csv file: %s" % csv_name)
+        full_source_name = os.path.join(self._input_path, csv_name)
+        successful = True
+        data = {}
+        csv_file = open(full_source_name)
+        csv_reader = csv.reader(csv_file)
+        row_num = 0
+        for row in csv_reader:
+            str = "".join(row)
+            values = str.split(split_char)
+            if print_values == True:
+                print("Key: %s has value %s" % (values[0], values[1]))
+            data[values[0]] = values[1]
+            row_num+=1
+        print("Readed %d lines in csv file." % row_num)
+        return successful, data
+
+    """
+    process_all_files_in_folders: Require initialize process_function with set_process_function
+    """
+    def process_all_files_in_folders(self, path, print_folders=False, print_files=False):
+        for root, directories, filenames in os.walk(path):
+            for directory in directories:
+                if print_folders == True:
+                    print("Checking folder: %s" % directory)
+                    print("\n")
+                current_dir = os.path.join(path, directory)
+                self.set_input_path(current_dir)
+                for filename in os.listdir(os.path.join(path, directory)):
+                    basefilename, file_extension = os.path.splitext(filename)
+                    if print_files == True:
+                        print("File: %s will process" % basefilename)
+                    successful, json_data = self.read_json_from_file(filename)
+                    self.process_function(successful, json_data)
+        return
