@@ -77,19 +77,35 @@ def try_create_file():
     return
 
 def try_process_with_external_function():
+    print("-- try_process_with_external_function ------------------------------------------")
     # Process default
     #parser.process_function()
     # Overload processing with function
     #parser.set_process_function(process_key)
     # Call new process function
     #parser.process_function("key", "value")
+    print("------------------------------------------------------------")
+
+def initialize():
+    scriptname = sys.argv[0]
+    pathname = os.path.dirname(sys.argv[0])
+    full_path_name = os.path.abspath(pathname)
+    print('Executing: ', scriptname)
+    # Create output path if needed
+    output_path = os.path.join(full_path_name, "output/")
+    if not os.path.exists(output_path):
+        os.makedirs(output_path)
 
 if __name__ == '__main__':
+    # Initialize
+    ###########################################################
+    initialize()
 
     # Use class
     ###########################################################
     try_wrong_file()
     try_read_file()
     try_create_file()
+
     # parser.test()
     print("Finish.")

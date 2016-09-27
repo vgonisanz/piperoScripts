@@ -17,7 +17,7 @@ nice -10 nemo &
 nice -9 atom &
 # Wait enought time to load all apps
 zenity --notification --text="Waiting until open..."
-sleep 40
+sleep 65
 
 # Second: Move apps (r) to workspaces (t)
 zenity --notification --text="Assigning workspaces..."
