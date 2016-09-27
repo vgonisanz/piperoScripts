@@ -224,6 +224,18 @@ class JsonManager(object):
         print("Readed %d lines in csv file." % row_num)
         return successful, data
 
+    def edit_json_from_lists(self, json_data=None, list_of_list=None):
+        if json_data is None:
+            json_data = self._json_data
+        successful = True
+        for pair in list_of_list:
+            key = pair[0]
+            value = pair[1]
+            if key in json_data:
+                print("Changing key: %s with value: %s" % (key, value))
+                json_data[key] = value
+        return successful, json_data
+
     """
     process_all_files: Require initialize process_function with set_process_function
     """

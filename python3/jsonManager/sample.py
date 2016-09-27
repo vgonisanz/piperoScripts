@@ -127,25 +127,26 @@ def try_process_all_files_in_a_folder():
     print("==================================================================")
     return
 
-def try_edit_and_copy():
-    print("== try_edit_and_copy ===========================================")
-    # Create instance
-    parser = JsonManager('parser')
-    input_path = os.path.join(full_path_name, "input")
-
-    print("==================================================================")
-    return
-
-def try_edit_without_copy():
+def try_edit_file_with_list():
     print("== try_edit_without_copy ===========================================")
+    filename = "test.json"
+
     # Create instance
     parser = JsonManager('parser')
     input_path = os.path.join(full_path_name, "input")
 
-    successful, json_data = parser.read_json_from_file("test.json")
+    json_values_array = []
+    json_values_array.append(["a", "new a value"])
+    json_values_array.append(["b", "new b value"])
+    json_values_array.append(["c", "new c value"])
+
+    successful, json_data = parser.read_json_from_file(filename)
     if successful == True:
         print("Processing...")
-        
+        successful, json_data = parser.edit_json_from_lists(json_data, json_values_array)
+        print("Saving...")
+        parser.write_json(filename, json_data)
+
     print("==================================================================")
     return
 
@@ -187,14 +188,13 @@ if __name__ == '__main__':
 
     # Use class
     ###########################################################
-    #try_read_wrong_file()
-    #try_read_file()
-    #try_create_file_from_list()
-    #try_create_file_from_csv()
-    #try_process_all_files_in_all_folder()
-    #try_process_all_files_in_a_folder()
-    #try_edit_and_copy()
-    try_edit_without_copy()
+    try_read_wrong_file()
+    try_read_file()
+    try_create_file_from_list()
+    try_create_file_from_csv()
+    try_process_all_files_in_all_folder()
+    try_process_all_files_in_a_folder()
+    try_edit_file_with_list()
 
     # parser.print_methods()
     # parser.test()
