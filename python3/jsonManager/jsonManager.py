@@ -3,6 +3,7 @@ import json
 import csv
 import collections
 import pathlib
+import inspect
 
 """
 This python 3 class will manager json individually for you.
@@ -47,11 +48,18 @@ class JsonManager(object):
         return
 
     """
+    Print all methods
+    """
+    def print_methods(self):
+        print(inspect.getmembers(self, predicate=inspect.ismethod))
+        return
+
+    """
     Test function
     """
     def test(self):
-        print("Name: %s" % self._name)
-        print("Input file: %s" % self._input_path)
+        print("Test")
+        print(inspect.getmembers(self, predicate=inspect.ismethod))
         return
 
     """
@@ -216,6 +224,18 @@ class JsonManager(object):
         print("Readed %d lines in csv file." % row_num)
         return successful, data
 
+    """
+    process_all_files: Require initialize process_function with set_process_function
+    """
+    def process_all_files(self, path, print_files=False):
+        self.set_input_path(path)
+        for filename in os.listdir(path):
+            basefilename, file_extension = os.path.splitext(filename)
+            if print_files == True:
+                print("File: %s will process" % basefilename)
+            successful, json_data = self.read_json_from_file(filename)
+            self.process_function(successful, json_data)
+        return
     """
     process_all_files_in_folders: Require initialize process_function with set_process_function
     """

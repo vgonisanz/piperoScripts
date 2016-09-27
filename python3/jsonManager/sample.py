@@ -1,6 +1,7 @@
 from jsonManager import JsonManager
 import sys
 import os
+from shutil import copyfile
 
 # Global variables
 scriptname = ""
@@ -104,7 +105,7 @@ def try_create_file_from_csv():
     print("==================================================================")
     return
 
-def try_process_with_external_function():
+def try_process_all_files_in_all_folder():
     print("== try_process_with_external_function ===========================================")
     # Create instance
     parser = JsonManager('parser')
@@ -115,20 +116,62 @@ def try_process_with_external_function():
     print("==================================================================")
     return
 
+def try_process_all_files_in_a_folder():
+    print("== try_process_with_external_function2 ===========================================")
+    # Create instance
+    parser = JsonManager('parser')
+    input_path = os.path.join(full_path_name, "input/folder2")
+
+    parser.set_process_function(external_process_key)
+    parser.process_all_files(input_path, True)
+    print("==================================================================")
+    return
+
+def try_edit_and_copy():
+    print("== try_edit_and_copy ===========================================")
+    # Create instance
+    parser = JsonManager('parser')
+    input_path = os.path.join(full_path_name, "input")
+
+    print("==================================================================")
+    return
+
+def try_edit_without_copy():
+    print("== try_edit_without_copy ===========================================")
+    # Create instance
+    parser = JsonManager('parser')
+    input_path = os.path.join(full_path_name, "input")
+
+    successful, json_data = parser.read_json_from_file("test.json")
+    if successful == True:
+        print("Processing...")
+        
+    print("==================================================================")
+    return
+
 def initialize():
     scriptname = sys.argv[0]
     pathname = os.path.dirname(sys.argv[0])
     full_path_name = os.path.abspath(pathname)
 
-    # Create output path if needed
-    output_path = os.path.join(full_path_name, "output/")
-    if not os.path.exists(output_path):
-        os.makedirs(output_path)
     print("\n")
     print("==================================================================")
     print('   Executing: ', scriptname)
     print("==================================================================")
     print("\n")
+
+    # Create output path if needed
+    output_path = os.path.join(full_path_name, "output/")
+    if not os.path.exists(output_path):
+        print("Creating output path...")
+        os.makedirs(output_path)
+
+    # Restore test.json is if needed
+    print("Restoring test.json...")
+    src_file = os.path.join(full_path_name, "input/test_original.json")
+    dst_file = os.path.join(full_path_name, "input/test.json")
+    copyfile(src_file, dst_file)
+    print("initialize done!\n")
     return
 
 def abort_exe( str ):
@@ -144,12 +187,16 @@ if __name__ == '__main__':
 
     # Use class
     ###########################################################
-    try_read_wrong_file()
-    try_read_file()
-    try_create_file_from_list()
-    try_create_file_from_csv()
-    try_process_with_external_function()
+    #try_read_wrong_file()
+    #try_read_file()
+    #try_create_file_from_list()
+    #try_create_file_from_csv()
+    #try_process_all_files_in_all_folder()
+    #try_process_all_files_in_a_folder()
+    #try_edit_and_copy()
+    try_edit_without_copy()
 
+    # parser.print_methods()
     # parser.test()
     print("\n")
     print("==================================================================")
