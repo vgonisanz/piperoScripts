@@ -105,6 +105,24 @@ def try_create_file_from_csv():
     print("==================================================================")
     return
 
+def try_create_file_from_csv_with_title():
+    print("== try_create_file_from_csv_with_title ===========================================")
+    input_path = os.path.join(full_path_name, "input/")
+    output_path = os.path.join(full_path_name, "output/")
+
+    # Create instance
+    parser = JsonManager('parser')
+    parser.set_input_path(input_path)
+    parser.set_output_path(output_path)
+
+    # Try to create json object
+    successful, json_data = parser.create_json_object_from_csv_with_title("csv_with_custom_col.csv", ';', False)
+    parser.print_all_json_values_in_an_array(json_data)
+    print("successful? %s" % successful)
+    #parser.write_json("test_csv_output.json", json_data)
+    print("==================================================================")
+    return
+
 def try_process_all_files_in_all_folder():
     print("== try_process_with_external_function ===========================================")
     # Create instance
@@ -188,13 +206,14 @@ if __name__ == '__main__':
 
     # Use class
     ###########################################################
-    try_read_wrong_file()
-    try_read_file()
-    try_create_file_from_list()
-    try_create_file_from_csv()
-    try_process_all_files_in_all_folder()
-    try_process_all_files_in_a_folder()
-    try_edit_file_with_list()
+    #try_read_wrong_file()
+    #try_read_file()
+    #try_create_file_from_list()
+    #try_create_file_from_csv()
+    try_create_file_from_csv_with_title()
+    #try_process_all_files_in_all_folder()
+    #try_process_all_files_in_a_folder()
+    #try_edit_file_with_list()
 
     # parser.print_methods()
     # parser.test()

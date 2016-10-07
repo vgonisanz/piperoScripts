@@ -135,6 +135,20 @@ class JsonManager(object):
         return
 
     """
+    print_all_json_values_in_an_array
+    """
+    def print_all_json_values_in_an_array(self, array_json_data=None):
+        if array_json_data is None:
+            array_json_data = self._array_json_data
+        print("Json contains keys: %s" % list(array_json_data))
+        array_index = 0
+        for json_data in array_json_data:
+            for key, value in json_data.items():
+                print("Array: %d has a Key: %s with value: %s" % (array_index, key, value))
+            array_index += 1
+        return
+
+    """
     print_arraykey_json_values
     """
     def print_arraykey_json_values(self, json_data=None, array_key=None):
@@ -220,6 +234,36 @@ class JsonManager(object):
             if print_values == True:
                 print("Key: %s has value %s" % (values[0], values[1]))
             data[values[0]] = values[1]
+            row_num+=1
+        print("Readed %d lines in csv file." % row_num)
+        return successful, data
+
+    """
+    create_json_object_from_csv_with_title
+    """
+    def create_json_object_from_csv_with_title(self, csv_name, split_char=';', print_values=False):
+        print("Reading csv file: %s" % csv_name)
+        full_source_name = os.path.join(self._input_path, csv_name)
+        successful = True
+        data = [None] * 0
+        csv_file = open(full_source_name)
+        csv_reader = csv.reader(csv_file)
+        row_num = 0
+        columns_array = [None] * 0
+        for row in csv_reader:
+            str = "".join(row)
+            values = str.split(split_char)
+            if row_num == 0:
+                columns_array = values;
+            else:
+                value_index = 0
+                data_row = {}
+                for value in values:
+                    data_row[columns_array[value_index]] = value
+                    value_index += 1
+                data.append(data_row)
+                if print_values == True:
+                    print("Row %d has values: %s" % (row_num, values))
             row_num+=1
         print("Readed %d lines in csv file." % row_num)
         return successful, data
