@@ -206,14 +206,14 @@ if __name__ == '__main__':
 
     # Use class
     ###########################################################
-    #try_read_wrong_file()
-    #try_read_file()
-    #try_create_file_from_list()
-    #try_create_file_from_csv()
+    try_read_wrong_file()
+    try_read_file()
+    try_create_file_from_list()
+    try_create_file_from_csv()
     try_create_file_from_csv_with_title()
-    #try_process_all_files_in_all_folder()
-    #try_process_all_files_in_a_folder()
-    #try_edit_file_with_list()
+    try_process_all_files_in_all_folder()
+    try_process_all_files_in_a_folder()
+    try_edit_file_with_list()
 
     # parser.print_methods()
     # parser.test()

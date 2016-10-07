@@ -244,6 +244,7 @@ class JsonManager(object):
     def create_json_object_from_csv_with_title(self, csv_name, split_char=';', print_values=False):
         print("Reading csv file: %s" % csv_name)
         full_source_name = os.path.join(self._input_path, csv_name)
+        print(full_source_name)
         successful = True
         data = [None] * 0
         csv_file = open(full_source_name)
